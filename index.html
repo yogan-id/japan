@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Kanji Practice</title>
+  <title>Hiragana Practice</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Zen+Antique&display=swap" rel="stylesheet">
 
   <style>
@@ -127,7 +127,7 @@
       text-align: center;
     }
 
-    /* Kanji title */
+    /* Hiragana title */
     #title {
       font-family: 'Zen Antique', serif;
       font-size: 44px;
@@ -259,8 +259,8 @@
   <div class="petals-bg" id="petals"></div>
 
   <div class="header">
-    <h1>練習 · Kanji</h1>
-    <small>trace kanji with your finger</small>
+    <h1>練習 · Hiragana</h1>
+    <small>trace Hiragana with your finger</small>
     <div class="branch-decor">🌸 ❀ 🌸 ❀ 🌸</div>
   </div>
 
@@ -281,11 +281,11 @@
     <div class="buttons">
       <button class="btn btn-show"  onclick="toggleTemplate()">👁 Template</button>
       <button class="btn btn-clear" onclick="clearCanvas()">✦ Clear</button>
-      <button class="btn btn-next"  onclick="nextKanji()">Next ➜</button>
+      <button class="btn btn-next"  onclick="nextHiragana()">Next ➜</button>
     </div>
   </div>
 
-  <div class="footer-note">🌸 sakura kanji dojo 🌸</div>
+  <div class="footer-note">🌸 sakura Hiragana dojo 🌸</div>
 
   <script>
     // ── Generate falling petals ──
@@ -312,20 +312,20 @@
 
     let drawing = false;
 
-    const kanjiList = ["ki.png", "ka.png"];
+    const HiraganaList = ["ki.png", "ka.png"];
     let currentIndex = 0;
 
     function buildDots() {
       dots.innerHTML = '';
-      kanjiList.forEach((_, i) => {
+      HiraganaList.forEach((_, i) => {
         const d = document.createElement('div');
         d.className = 'dot' + (i === currentIndex ? ' active' : '');
         dots.appendChild(d);
       });
     }
 
-    function updateKanji() {
-      const file = kanjiList[currentIndex];
+    function updateHiragana() {
+      const file = HiraganaList[currentIndex];
       img.src = file;
       title.textContent = file.split(".")[0];
       img.style.display = "none";
@@ -333,9 +333,9 @@
       buildDots();
     }
 
-    function nextKanji() {
-      currentIndex = (currentIndex + 1) % kanjiList.length;
-      updateKanji();
+    function nextHiragana() {
+      currentIndex = (currentIndex + 1) % HiraganaList.length;
+      updateHiragana();
     }
 
     function toggleTemplate() {
@@ -390,7 +390,7 @@
     canvas.addEventListener("touchmove",  draw,  { passive: false });
     canvas.addEventListener("touchend",   stop);
 
-    updateKanji();
+    updateHiragana();
   </script>
 </body>
 </html>
