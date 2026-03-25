@@ -301,7 +301,7 @@
     ];
 
     let currentIndex    = 0;
-    let templateHidden  = false;   // stencil is VISIBLE by default
+    let templateHidden  = true;   // stencil is VISIBLE by default
 
     const canvas      = document.getElementById('canvas');
     const ctx         = canvas.getContext('2d');
@@ -337,7 +337,7 @@
 
       // Reset: show stencil again on new character
       templateHidden = false;
-      tplCanvas.classList.remove('hidden');
+      tplCanvas.classList.add('hidden');
 
       drawStencil(entry.k);
       clearCanvas();
