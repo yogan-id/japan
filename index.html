@@ -112,6 +112,7 @@
       letter-spacing: 0.25em;
       text-transform: uppercase;
       margin-bottom: 14px;
+      min-height: 20px;
     }
 
     .progress-dots {
@@ -132,7 +133,6 @@
     }
     .dot.active { background: var(--sakura-deep); }
 
-    /* The stacking box — both canvases sit inside absolutely */
     .canvas-wrap {
       position: relative;
       display: block;
@@ -143,11 +143,9 @@
       overflow: hidden;
       box-shadow: 0 4px 20px rgba(136,14,79,0.14), 0 0 0 2.5px var(--petal-2);
       background: #fffbfc;
-      /* square: use padding-top trick so height = width on mobile */
       aspect-ratio: 1 / 1;
     }
 
-    /* Both canvases fill the wrapper exactly */
     .canvas-wrap canvas {
       position: absolute;
       top: 0; left: 0;
@@ -155,18 +153,18 @@
       height: 100%;
     }
 
-    /* Layer 1 — stencil (always below drawing) */
+    /* Layer 1 — stencil */
     #tpl {
       z-index: 1;
       pointer-events: none;
-      /* stencil always visible at low opacity */
-      opacity: 1;
-      transition: opacity 0.35s;
+      /* NO transition — instant hide/show to prevent flash */
+      opacity: 0;
     }
-    /* when hidden by button press */
-    #tpl.hidden { opacity: 0; }
+    #tpl.visible {
+      opacity: 1;
+    }
 
-    /* Layer 2 — user drawing (transparent bg so stencil shows through) */
+    /* Layer 2 — user drawing */
     #canvas {
       z-index: 2;
       touch-action: none;
@@ -254,10 +252,8 @@
     <div class="romaji-label" id="romaji-label"></div>
     <div class="progress-dots" id="dots"></div>
 
-    <div class="canvas-wrap" id="canvas-wrap">
-      <!-- Layer 1: stencil — always under the drawing -->
+    <div class="canvas-wrap">
       <canvas id="tpl"    width="320" height="320"></canvas>
-      <!-- Layer 2: user strokes -->
       <canvas id="canvas" width="320" height="320"></canvas>
     </div>
 
@@ -282,7 +278,7 @@
       const dur = 6 + Math.random() * 9;
       p.style.animationDuration = dur + 's';
       p.style.animationDelay   = (-Math.random() * dur) + 's';
-      p.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
+      p.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
       petalsEl.appendChild(p);
     }
 
@@ -300,8 +296,8 @@
       {k:'わ',r:'wa'},{k:'を',r:'wo'},{k:'ん',r:'n'}
     ];
 
-    let currentIndex    = 0;
-    let templateHidden  = true;   // stencil is VISIBLE by default
+    let currentIndex   = 0;
+    let templateVisible = false; // hidden by default
 
     const canvas      = document.getElementById('canvas');
     const ctx         = canvas.getContext('2d');
@@ -310,11 +306,8 @@
     const romajiLabel = document.getElementById('romaji-label');
     const dotsEl      = document.getElementById('dots');
 
-    // Draw the hiragana as a light stencil centred on the 320×320 canvas
     function drawStencil(kana) {
       tplCtx.clearRect(0, 0, 320, 320);
-
-      // Soft pink fill — visible enough to trace but not overpowering
       tplCtx.fillStyle    = 'rgba(210, 50, 110, 0.18)';
       tplCtx.font         = '240px "Noto Serif JP", "Hiragino Kaku Gothic Pro", "Yu Gothic", serif';
       tplCtx.textAlign    = 'center';
@@ -332,20 +325,21 @@
     }
 
     function update() {
-    const entry = kanaList[currentIndex];
-    kanaLabel.textContent   = entry.k;
-    romajiLabel.textContent = entry.r;
+      const entry = kanaList[currentIndex];
+      romajiLabel.textContent = entry.r;
 
-    // Hide and clear stencil FIRST, then redraw
-    templateHidden = true;
-    tplCanvas.classList.add('hidden');
-    tplCtx.clearRect(0, 0, 320, 320);
+      // 1. Hide stencil instantly (no CSS transition on #tpl)
+      templateVisible = false;
+      tplCanvas.classList.remove('visible');
 
-    clearCanvas();
-    buildDots();
+      // 2. Clear both canvases
+      tplCtx.clearRect(0, 0, 320, 320);
+      clearCanvas();
 
-    // Draw new stencil after font tick (invisible until user presses Template)
-    requestAnimationFrame(() => drawStencil(entry.k));
+      // 3. Draw new stencil into hidden canvas — no flash possible
+      drawStencil(entry.k);
+
+      buildDots();
     }
 
     function nextKana() {
@@ -353,10 +347,9 @@
       update();
     }
 
-    // Toggle hides / shows the stencil layer
     function toggleTemplate() {
-      templateHidden = !templateHidden;
-      tplCanvas.classList.toggle('hidden', templateHidden);
+      templateVisible = !templateVisible;
+      tplCanvas.classList.toggle('visible', templateVisible);
     }
 
     function clearCanvas() {
@@ -391,7 +384,7 @@
       e.preventDefault();
       const p = getPos(e);
       ctx.lineTo(p.x, p.y);
-      ctx.strokeStyle = 'rgba(26, 12, 11, 0.8)';
+      ctx.strokeStyle = 'rgba(26, 10, 15, 0.65)';
       ctx.lineWidth   = 10;
       ctx.lineCap     = 'round';
       ctx.lineJoin    = 'round';
@@ -407,7 +400,6 @@
     canvas.addEventListener('touchmove',  draw,  { passive: false });
     canvas.addEventListener('touchend',   stop);
 
-    // Wait for Google Fonts to load before drawing first stencil
     document.fonts.ready.then(() => update());
   </script>
 </body>
