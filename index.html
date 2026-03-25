@@ -32,7 +32,6 @@
       position: relative;
     }
 
-    /* Falling petals */
     .petals-bg {
       position: fixed;
       inset: 0;
@@ -40,36 +39,23 @@
       overflow: hidden;
       z-index: 0;
     }
-
     .petal {
       position: absolute;
       top: -40px;
-      width: 18px;
-      height: 22px;
       opacity: 0;
       animation: fall linear infinite;
       border-radius: 50% 0 50% 0;
     }
-    .petal::before {
-      content: '';
-      display: block;
-      width: 100%;
-      height: 100%;
-      border-radius: 50% 0 50% 0;
-      transform: rotate(45deg);
-    }
     .petal:nth-child(odd)  { background: var(--petal-2); }
     .petal:nth-child(even) { background: var(--petal-1); }
     .petal:nth-child(3n)   { background: #ffc8d9; }
-
     @keyframes fall {
-      0%   { transform: translateY(0) rotate(0deg) translateX(0);   opacity: 0; }
+      0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
       10%  { opacity: 0.85; }
       90%  { opacity: 0.6; }
       100% { transform: translateY(110vh) rotate(360deg) translateX(60px); opacity: 0; }
     }
 
-    /* Header */
     .header {
       position: relative;
       z-index: 2;
@@ -80,15 +66,12 @@
       border-bottom: 2px solid var(--petal-2);
       box-shadow: 0 4px 24px var(--shadow);
     }
-
     .header h1 {
       font-family: 'Zen Antique', serif;
       font-size: 22px;
       color: var(--sakura-dark);
       letter-spacing: 0.15em;
-      text-shadow: 0 1px 8px rgba(233,30,140,0.15);
     }
-
     .header small {
       display: block;
       font-size: 11px;
@@ -97,20 +80,16 @@
       margin-top: 3px;
       text-transform: uppercase;
     }
-
-    /* Sakura branch decoration */
     .branch-decor {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
       margin-top: 6px;
-      color: var(--sakura-mid);
       font-size: 18px;
       letter-spacing: 4px;
     }
 
-    /* Main card */
     .card {
       position: relative;
       z-index: 2;
@@ -127,61 +106,73 @@
       text-align: center;
     }
 
-    /* Hiragana title */
-    #title {
-      font-family: 'Zen Antique', serif;
-      font-size: 44px;
-      color: var(--ink);
-      letter-spacing: 0.05em;
-      line-height: 1;
-      margin-bottom: 4px;
-      text-shadow: 0 2px 12px rgba(136,14,79,0.12);
+    .romaji-label {
+      font-size: 13px;
+      color: var(--sakura-mid);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
     }
 
     .progress-dots {
       display: flex;
       justify-content: center;
-      gap: 7px;
-      margin-bottom: 16px;
+      gap: 5px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      max-width: 290px;
+      margin-left: auto;
+      margin-right: auto;
     }
     .dot {
-      width: 7px; height: 7px;
+      width: 6px; height: 6px;
       border-radius: 50%;
       background: var(--petal-2);
       transition: background 0.3s;
     }
     .dot.active { background: var(--sakura-deep); }
 
-    /* Canvas wrapper */
+    /* The stacking box — both canvases sit inside absolutely */
     .canvas-wrap {
       position: relative;
-      display: inline-block;
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow:
-        0 4px 20px rgba(136,14,79,0.14),
-        0 0 0 2.5px var(--petal-2);
-    }
-
-    canvas {
       display: block;
-      background: #fffbfc;
-      touch-action: none;
       width: 100%;
       max-width: 320px;
-      height: auto;
+      margin: 0 auto;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(136,14,79,0.14), 0 0 0 2.5px var(--petal-2);
+      background: #fffbfc;
+      /* square: use padding-top trick so height = width on mobile */
+      aspect-ratio: 1 / 1;
     }
 
-    img#template {
+    /* Both canvases fill the wrapper exactly */
+    .canvas-wrap canvas {
       position: absolute;
       top: 0; left: 0;
-      width: 100%; height: 100%;
-      opacity: 0.25;
-      display: none;
-      pointer-events: none;
+      width: 100%;
+      height: 100%;
     }
 
-    /* Corner sakura decorations */
+    /* Layer 1 — stencil (always below drawing) */
+    #tpl {
+      z-index: 1;
+      pointer-events: none;
+      /* stencil always visible at low opacity */
+      opacity: 1;
+      transition: opacity 0.35s;
+    }
+    /* when hidden by button press */
+    #tpl.hidden { opacity: 0; }
+
+    /* Layer 2 — user drawing (transparent bg so stencil shows through) */
+    #canvas {
+      z-index: 2;
+      touch-action: none;
+      background: transparent;
+    }
+
     .corner {
       position: absolute;
       font-size: 22px;
@@ -193,7 +184,6 @@
     .corner.bl { bottom: 7px; left: 9px; transform: rotate(20deg); }
     .corner.br { bottom: 7px; right: 9px; transform: rotate(-20deg); }
 
-    /* Buttons */
     .buttons {
       display: flex;
       gap: 10px;
@@ -201,7 +191,6 @@
       flex-wrap: wrap;
       justify-content: center;
     }
-
     .btn {
       flex: 1;
       min-width: 80px;
@@ -210,27 +199,22 @@
       border-radius: 50px;
       font-family: 'Noto Serif JP', serif;
       font-size: 14px;
-      font-weight: 400;
       cursor: pointer;
       letter-spacing: 0.05em;
       transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
       -webkit-tap-highlight-color: transparent;
     }
     .btn:active { transform: scale(0.95); }
-
     .btn-show {
       background: linear-gradient(135deg, #fff0f5, #fce4ec);
       color: var(--sakura-dark);
       box-shadow: 0 3px 12px rgba(233,30,140,0.12), inset 0 0 0 1.5px var(--petal-2);
     }
-    .btn-show:hover { background: linear-gradient(135deg, #fce4ec, #f8bbd0); }
-
     .btn-clear {
       background: linear-gradient(135deg, #fff8f0, #fce4ec);
       color: #7b3a50;
       box-shadow: 0 3px 12px rgba(136,14,79,0.10), inset 0 0 0 1.5px #f9c6d4;
     }
-
     .btn-next {
       background: linear-gradient(135deg, var(--sakura-deep), var(--sakura-dark));
       color: #fff;
@@ -238,9 +222,7 @@
       font-weight: 700;
       letter-spacing: 0.08em;
     }
-    .btn-next:hover { box-shadow: 0 6px 24px rgba(233,30,140,0.5); }
 
-    /* Footer note */
     .footer-note {
       position: relative;
       z-index: 2;
@@ -255,12 +237,11 @@
 </head>
 <body>
 
-  <!-- Falling petals background -->
   <div class="petals-bg" id="petals"></div>
 
   <div class="header">
-    <h1>練習 · Hiragana</h1>
-    <small>trace Hiragana with your finger</small>
+    <h1>ひらがな · Practice</h1>
+    <small>trace the character with your finger</small>
     <div class="branch-decor">🌸 ❀ 🌸 ❀ 🌸</div>
   </div>
 
@@ -270,127 +251,160 @@
     <span class="corner bl">❀</span>
     <span class="corner br">❀</span>
 
-    <div id="title"></div>
+    <div class="romaji-label" id="romaji-label"></div>
     <div class="progress-dots" id="dots"></div>
 
-    <div class="canvas-wrap">
+    <div class="canvas-wrap" id="canvas-wrap">
+      <!-- Layer 1: stencil — always under the drawing -->
+      <canvas id="tpl"    width="320" height="320"></canvas>
+      <!-- Layer 2: user strokes -->
       <canvas id="canvas" width="320" height="320"></canvas>
-      <img id="template" width="320" height="320" />
     </div>
 
     <div class="buttons">
       <button class="btn btn-show"  onclick="toggleTemplate()">👁 Template</button>
       <button class="btn btn-clear" onclick="clearCanvas()">✦ Clear</button>
-      <button class="btn btn-next"  onclick="nextHiragana()">Next ➜</button>
+      <button class="btn btn-next"  onclick="nextKana()">Next ➜</button>
     </div>
   </div>
 
-  <div class="footer-note">🌸 sakura Hiragana dojo 🌸</div>
+  <div class="footer-note">🌸 sakura hiragana dojo 🌸</div>
 
   <script>
-    // ── Generate falling petals ──
-    const petalsContainer = document.getElementById('petals');
+    // ── Falling petals ──
+    const petalsEl = document.getElementById('petals');
     for (let i = 0; i < 22; i++) {
       const p = document.createElement('div');
       p.className = 'petal';
-      p.style.left = Math.random() * 100 + 'vw';
+      p.style.left   = Math.random() * 100 + 'vw';
       p.style.width  = (12 + Math.random() * 14) + 'px';
       p.style.height = (15 + Math.random() * 16) + 'px';
       const dur = 6 + Math.random() * 9;
       p.style.animationDuration = dur + 's';
-      p.style.animationDelay = (-Math.random() * dur) + 's';
+      p.style.animationDelay   = (-Math.random() * dur) + 's';
       p.style.transform = 'rotate(' + (Math.random()*360) + 'deg)';
-      petalsContainer.appendChild(p);
+      petalsEl.appendChild(p);
     }
 
-    // ── Canvas ──
-    const canvas = document.getElementById("canvas");
-    const ctx    = canvas.getContext("2d");
-    const img    = document.getElementById("template");
-    const title  = document.getElementById("title");
-    const dots   = document.getElementById("dots");
+    // ── Hiragana list ──
+    const kanaList = [
+      {k:'あ',r:'a'}, {k:'い',r:'i'}, {k:'う',r:'u'}, {k:'え',r:'e'}, {k:'お',r:'o'},
+      {k:'か',r:'ka'},{k:'き',r:'ki'},{k:'く',r:'ku'},{k:'け',r:'ke'},{k:'こ',r:'ko'},
+      {k:'さ',r:'sa'},{k:'し',r:'shi'},{k:'す',r:'su'},{k:'せ',r:'se'},{k:'そ',r:'so'},
+      {k:'た',r:'ta'},{k:'ち',r:'chi'},{k:'つ',r:'tsu'},{k:'て',r:'te'},{k:'と',r:'to'},
+      {k:'な',r:'na'},{k:'に',r:'ni'},{k:'ぬ',r:'nu'},{k:'ね',r:'ne'},{k:'の',r:'no'},
+      {k:'は',r:'ha'},{k:'ひ',r:'hi'},{k:'ふ',r:'fu'},{k:'へ',r:'he'},{k:'ほ',r:'ho'},
+      {k:'ま',r:'ma'},{k:'み',r:'mi'},{k:'む',r:'mu'},{k:'め',r:'me'},{k:'も',r:'mo'},
+      {k:'や',r:'ya'},{k:'ゆ',r:'yu'},{k:'よ',r:'yo'},
+      {k:'ら',r:'ra'},{k:'り',r:'ri'},{k:'る',r:'ru'},{k:'れ',r:'re'},{k:'ろ',r:'ro'},
+      {k:'わ',r:'wa'},{k:'を',r:'wo'},{k:'ん',r:'n'}
+    ];
 
-    let drawing = false;
+    let currentIndex    = 0;
+    let templateHidden  = false;   // stencil is VISIBLE by default
 
-    const HiraganaList = ["ki.png", "ka.png"];
-    let currentIndex = 0;
+    const canvas      = document.getElementById('canvas');
+    const ctx         = canvas.getContext('2d');
+    const tplCanvas   = document.getElementById('tpl');
+    const tplCtx      = tplCanvas.getContext('2d');
+    const romajiLabel = document.getElementById('romaji-label');
+    const dotsEl      = document.getElementById('dots');
+
+    // Draw the hiragana as a light stencil centred on the 320×320 canvas
+    function drawStencil(kana) {
+      tplCtx.clearRect(0, 0, 320, 320);
+
+      // Soft pink fill — visible enough to trace but not overpowering
+      tplCtx.fillStyle    = 'rgba(210, 50, 110, 0.18)';
+      tplCtx.font         = '240px "Noto Serif JP", "Hiragino Kaku Gothic Pro", "Yu Gothic", serif';
+      tplCtx.textAlign    = 'center';
+      tplCtx.textBaseline = 'middle';
+      tplCtx.fillText(kana, 160, 168);
+    }
 
     function buildDots() {
-      dots.innerHTML = '';
-      HiraganaList.forEach((_, i) => {
+      dotsEl.innerHTML = '';
+      kanaList.forEach((_, i) => {
         const d = document.createElement('div');
         d.className = 'dot' + (i === currentIndex ? ' active' : '');
-        dots.appendChild(d);
+        dotsEl.appendChild(d);
       });
     }
 
-    function updateHiragana() {
-      const file = HiraganaList[currentIndex];
-      img.src = file;
-      title.textContent = file.split(".")[0];
-      img.style.display = "none";
+    function update() {
+      const entry = kanaList[currentIndex];
+      romajiLabel.textContent = entry.r;
+
+      // Reset: show stencil again on new character
+      templateHidden = false;
+      tplCanvas.classList.remove('hidden');
+
+      drawStencil(entry.k);
       clearCanvas();
       buildDots();
     }
 
-    function nextHiragana() {
-      currentIndex = (currentIndex + 1) % HiraganaList.length;
-      updateHiragana();
+    function nextKana() {
+      currentIndex = (currentIndex + 1) % kanaList.length;
+      update();
     }
 
+    // Toggle hides / shows the stencil layer
     function toggleTemplate() {
-      img.style.display = img.style.display === "none" ? "block" : "none";
+      templateHidden = !templateHidden;
+      tplCanvas.classList.toggle('hidden', templateHidden);
     }
 
     function clearCanvas() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
 
+    // ── Drawing ──
+    let drawing = false;
+
     function getPos(e) {
       const rect = canvas.getBoundingClientRect();
-      const scaleX = canvas.width  / rect.width;
-      const scaleY = canvas.height / rect.height;
-      if (e.touches) {
-        return {
-          x: (e.touches[0].clientX - rect.left) * scaleX,
-          y: (e.touches[0].clientY - rect.top)  * scaleY
-        };
-      }
+      const sx = canvas.width  / rect.width;
+      const sy = canvas.height / rect.height;
+      if (e.touches) return {
+        x: (e.touches[0].clientX - rect.left) * sx,
+        y: (e.touches[0].clientY - rect.top)  * sy
+      };
       return {
-        x: (e.clientX - rect.left) * scaleX,
-        y: (e.clientY - rect.top)  * scaleY
+        x: (e.clientX - rect.left) * sx,
+        y: (e.clientY - rect.top)  * sy
       };
     }
 
     function start(e) {
       drawing = true;
       ctx.beginPath();
-      const pos = getPos(e);
-      ctx.moveTo(pos.x, pos.y);
+      const p = getPos(e);
+      ctx.moveTo(p.x, p.y);
     }
-
     function draw(e) {
       if (!drawing) return;
       e.preventDefault();
-      const pos = getPos(e);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.strokeStyle = "#1a0a0f";
-      ctx.lineWidth   = 13;
-      ctx.lineCap     = "round";
-      ctx.lineJoin    = "round";
+      const p = getPos(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = 'rgba(26, 12, 11, 0.8)';
+      ctx.lineWidth   = 10;
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
       ctx.stroke();
     }
-
     function stop() { drawing = false; }
 
-    canvas.addEventListener("mousedown",  start);
-    canvas.addEventListener("mousemove",  draw);
-    canvas.addEventListener("mouseup",    stop);
-    canvas.addEventListener("touchstart", start, { passive: false });
-    canvas.addEventListener("touchmove",  draw,  { passive: false });
-    canvas.addEventListener("touchend",   stop);
+    canvas.addEventListener('mousedown',  start);
+    canvas.addEventListener('mousemove',  draw);
+    canvas.addEventListener('mouseup',    stop);
+    canvas.addEventListener('mouseleave', stop);
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove',  draw,  { passive: false });
+    canvas.addEventListener('touchend',   stop);
 
-    updateHiragana();
+    // Wait for Google Fonts to load before drawing first stencil
+    document.fonts.ready.then(() => update());
   </script>
 </body>
 </html>
