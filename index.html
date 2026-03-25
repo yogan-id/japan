@@ -332,16 +332,20 @@
     }
 
     function update() {
-      const entry = kanaList[currentIndex];
-      romajiLabel.textContent = entry.r;
+    const entry = kanaList[currentIndex];
+    kanaLabel.textContent   = entry.k;
+    romajiLabel.textContent = entry.r;
 
-      // Reset: show stencil again on new character
-      templateHidden = false;
-      tplCanvas.classList.add('hidden');
+    // Hide and clear stencil FIRST, then redraw
+    templateHidden = true;
+    tplCanvas.classList.add('hidden');
+    tplCtx.clearRect(0, 0, 320, 320);
 
-      drawStencil(entry.k);
-      clearCanvas();
-      buildDots();
+    clearCanvas();
+    buildDots();
+
+    // Draw new stencil after font tick (invisible until user presses Template)
+    requestAnimationFrame(() => drawStencil(entry.k));
     }
 
     function nextKana() {
