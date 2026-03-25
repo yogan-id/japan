@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <title>Kanji Practice</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #f5f5f5;
+    }
+
+    .container {
+      position: relative;
+      display: inline-block;
+      margin-top: 20px;
+    }
+
+    canvas {
+      border: 2px solid #333;
+      background: white;
+      touch-action: none;
+    }
+
+    img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0.3;
+      display: none;
+      pointer-events: none;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h2 id="title"></h2>
+
+  <div class="container">
+    <canvas id="canvas" width="300" height="300"></canvas>
+    <img id="template" width="300" height="300" />
+  </div>
+
+  <br>
+
+  <button onclick="toggleTemplate()">Показать / скрыть</button>
+  <button onclick="clearCanvas()">Очистить</button>
+  <button onclick="nextKanji()">Next ➡️</button>
+
+  <script>
+    const canvas = document.getElementById("canvas");
+    const ctx = canvas.getContext("2d");
+    const img = document.getElementById("template");
+    const title = document.getElementById("title");
+
+    let drawing = false;
+
+    // 📁 список изображений
+    const kanjiList = ["ki.png", "ka.png"];
+    let currentIndex = 0;
+
+    function updateKanji() {
+      const file = kanjiList[currentIndex];
+      img.src = file;
+
+      // название без .png
+      const name = file.split(".")[0];
+      title.textContent = name;
+
+      // скрываем трафарет при переключении
+      img.style.display = "none";
+
+      clearCanvas();
+    }
+
+    function nextKanji() {
+      currentIndex = (currentIndex + 1) % kanjiList.length;
+      updateKanji();
+    }
+
+    function toggleTemplate() {
+      img.style.display = img.style.display === "none" ? "block" : "none";
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function getPos(e) {
+      if (e.touches) {
+        return {
+          x: e.touches[0].clientX - canvas.getBoundingClientRect().left,
+          y: e.touches[0].clientY - canvas.getBoundingClientRect().top
+        };
+      }
+      return {
+        x: e.offsetX,
+        y: e.offsetY
+      };
+    }
+
+    function start(e) {
+      drawing = true;
+      ctx.beginPath();
+      const pos = getPos(e);
+      ctx.moveTo(pos.x, pos.y);
+    }
+
+    function draw(e) {
+      if (!drawing) return;
+      e.preventDefault();
+
+      const pos = getPos(e);
+      ctx.lineTo(pos.x, pos.y);
+      ctx.strokeStyle = "black";
+      ctx.lineWidth = 14;
+      ctx.lineCap = "round";
+      ctx.stroke();
+    }
+
+    function stop() {
+      drawing = false;
+    }
+
+    canvas.addEventListener("mousedown", start);
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mouseup", stop);
+
+    canvas.addEventListener("touchstart", start);
+    canvas.addEventListener("touchmove", draw);
+    canvas.addEventListener("touchend", stop);
+
+    // старт
+    updateKanji();
+  </script>
+
+</body>
+</html>
