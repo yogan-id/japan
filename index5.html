@@ -32,182 +32,255 @@
       position: relative;
     }
 
+    /* ── Petals ── */
     .petals-bg {
-      position: fixed; inset: 0;
-      pointer-events: none; overflow: hidden; z-index: 0;
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
     }
     .petal {
-      position: absolute; top: -40px; opacity: 0;
-      animation: fall linear infinite; border-radius: 50% 0 50% 0;
+      position: absolute;
+      top: -40px;
+      opacity: 0;
+      animation: fall linear infinite;
+      border-radius: 50% 0 50% 0;
     }
     .petal:nth-child(odd)  { background: var(--petal-2); }
     .petal:nth-child(even) { background: var(--petal-1); }
     .petal:nth-child(3n)   { background: #ffc8d9; }
     @keyframes fall {
       0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
-      10%  { opacity: 0.85; } 90% { opacity: 0.6; }
+      10%  { opacity: 0.85; }
+      90%  { opacity: 0.6; }
       100% { transform: translateY(110vh) rotate(360deg) translateX(60px); opacity: 0; }
     }
 
     /* ── Header ── */
     .header {
-      position: relative; z-index: 10; width: 100%;
-      padding: 22px 20px 12px; text-align: center;
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      padding: 22px 20px 12px;
+      text-align: center;
       background: linear-gradient(160deg, #fff0f4 0%, #fce4ec 100%);
       border-bottom: 2px solid var(--petal-2);
       box-shadow: 0 4px 24px var(--shadow);
     }
     .header h1 {
-      font-family: 'Zen Antique', serif; font-size: 22px;
-      color: var(--sakura-dark); letter-spacing: 0.15em;
+      font-family: 'Zen Antique', serif;
+      font-size: 22px;
+      color: var(--sakura-dark);
+      letter-spacing: 0.15em;
     }
     .header small {
-      display: block; font-size: 11px; color: var(--sakura-mid);
-      letter-spacing: 0.3em; margin-top: 2px; text-transform: uppercase;
+      display: block;
+      font-size: 11px;
+      color: var(--sakura-mid);
+      letter-spacing: 0.3em;
+      margin-top: 2px;
+      text-transform: uppercase;
     }
     .branch-decor {
-      display: flex; align-items: center; justify-content: center;
-      gap: 10px; margin-top: 5px; font-size: 16px; letter-spacing: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 5px;
+      font-size: 16px;
+      letter-spacing: 4px;
     }
 
-    /* ── Menu bar ── */
+    /* ── Group menu bar ── */
     .menu-bar {
-      position: relative; z-index: 9; width: 100%;
+      position: relative;
+      z-index: 9;
+      width: 100%;
       background: linear-gradient(180deg, #fff0f4 0%, #fce4ec 100%);
       border-bottom: 1.5px solid var(--petal-2);
       box-shadow: 0 3px 14px rgba(136,14,79,0.09);
     }
 
-    .menu-top-row {
-      display: flex; align-items: center;
+    /* Toggle button row */
+    .menu-toggle-row {
+      display: flex;
+      align-items: center;
       justify-content: center;
-      padding: 8px 14px; gap: 8px;
-    }
-
-    /* Toggle row (left side) */
-    .menu-toggle-btn {
-      display: flex; align-items: center; gap: 6px;
-      cursor: pointer; user-select: none;
+      gap: 8px;
+      padding: 8px 16px;
+      cursor: pointer;
+      user-select: none;
       -webkit-tap-highlight-color: transparent;
     }
-    .menu-toggle-btn span.label {
-      font-size: 12px; color: var(--sakura-dark);
-      letter-spacing: 0.18em; text-transform: uppercase; font-weight: 600;
-    }
-    .menu-active-label {
-      font-size: 11px; color: var(--sakura-mid);
-      letter-spacing: 0.1em;
-      background: rgba(244,143,177,0.18);
-      border-radius: 20px; padding: 2px 9px;
-      max-width: 160px; overflow: hidden;
-      text-overflow: ellipsis; white-space: nowrap;
+    .menu-toggle-row span {
+      font-size: 12px;
+      color: var(--sakura-dark);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 600;
     }
     .menu-arrow {
-      font-size: 10px; color: var(--sakura-mid);
-      transition: transform 0.25s; display: inline-block;
+      font-size: 11px;
+      color: var(--sakura-mid);
+      transition: transform 0.25s;
+      display: inline-block;
     }
     .menu-bar.open .menu-arrow { transform: rotate(180deg); }
 
-    /* Mode switch button (right side) */
-    .mode-btn {
-      display: flex; align-items: center; gap: 5px;
-      padding: 5px 12px; border-radius: 20px; border: none;
-      background: var(--paper);
-      border: 1.5px solid var(--petal-2);
-      color: var(--sakura-dark);
-      font-family: 'Noto Serif JP', serif;
-      font-size: 11px; letter-spacing: 0.05em;
-      cursor: pointer; white-space: nowrap;
-      transition: background 0.2s, transform 0.12s;
-      -webkit-tap-highlight-color: transparent;
-      flex-shrink: 0;
+    /* Active group label */
+    .menu-active-label {
+      font-size: 11px;
+      color: var(--sakura-mid);
+      letter-spacing: 0.12em;
+      background: rgba(244,143,177,0.18);
+      border-radius: 20px;
+      padding: 2px 10px;
     }
-    .mode-btn:active { transform: scale(0.93); }
-    .mode-btn.col-mode {
-      background: linear-gradient(135deg, #fff0f5, #fce4ec);
-    }
-    .mode-icon { font-size: 13px; }
 
-    /* Collapsible chips */
+    /* Collapsible grid of group chips */
     .menu-grid-wrap {
-      max-height: 0; overflow: hidden;
+      max-height: 0;
+      overflow: hidden;
       transition: max-height 0.3s ease;
     }
-    .menu-bar.open .menu-grid-wrap { max-height: 320px; }
-    .menu-grid {
-      display: flex; flex-wrap: wrap; gap: 7px;
-      padding: 2px 14px 13px; justify-content: center;
+    .menu-bar.open .menu-grid-wrap {
+      max-height: 300px;
     }
+    .menu-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding: 4px 14px 14px;
+      justify-content: center;
+    }
+
     .group-chip {
-      padding: 6px 12px; border-radius: 20px;
+      padding: 6px 13px;
+      border-radius: 20px;
       border: 1.5px solid var(--petal-2);
-      background: var(--paper); color: var(--sakura-dark);
-      font-family: 'Noto Serif JP', serif; font-size: 11px;
-      cursor: pointer; letter-spacing: 0.06em;
+      background: var(--paper);
+      color: var(--sakura-dark);
+      font-family: 'Noto Serif JP', serif;
+      font-size: 12px;
+      cursor: pointer;
+      letter-spacing: 0.08em;
       transition: background 0.18s, border-color 0.18s, color 0.18s, transform 0.12s;
-      -webkit-tap-highlight-color: transparent; white-space: nowrap;
+      -webkit-tap-highlight-color: transparent;
+      white-space: nowrap;
     }
     .group-chip:active { transform: scale(0.93); }
     .group-chip.active {
       background: linear-gradient(135deg, var(--sakura-deep), var(--sakura-dark));
-      border-color: transparent; color: #fff;
+      border-color: transparent;
+      color: #fff;
       box-shadow: 0 2px 10px rgba(233,30,140,0.3);
     }
 
     /* ── Card ── */
     .card {
-      position: relative; z-index: 2;
+      position: relative;
+      z-index: 2;
       margin: 20px 16px 0;
-      background: var(--paper); border-radius: 24px;
+      background: var(--paper);
+      border-radius: 24px;
       padding: 22px 18px 38px;
       box-shadow:
         0 8px 40px rgba(136,14,79,0.13),
         0 2px 8px rgba(233,30,140,0.08),
         inset 0 0 0 1px rgba(244,143,177,0.35);
-      width: calc(100% - 32px); max-width: 390px; text-align: center;
+      width: calc(100% - 32px);
+      max-width: 390px;
+      text-align: center;
     }
 
     .romaji-label {
-      font-size: 13px; color: var(--sakura-mid);
-      letter-spacing: 0.25em; text-transform: uppercase;
-      margin-bottom: 14px; min-height: 20px;
+      font-size: 13px;
+      color: var(--sakura-mid);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      min-height: 20px;
     }
 
     .progress-dots {
-      display: flex; justify-content: center; gap: 5px;
-      margin-bottom: 14px; flex-wrap: wrap;
-      max-width: 290px; margin-left: auto; margin-right: auto;
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      max-width: 290px;
+      margin-left: auto;
+      margin-right: auto;
     }
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--petal-2); transition: background 0.3s; }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--petal-2);
+      transition: background 0.3s;
+    }
     .dot.active { background: var(--sakura-deep); }
 
     .canvas-wrap {
-      position: relative; display: block;
-      width: 100%; max-width: 320px; margin: 0 auto;
-      border-radius: 16px; overflow: hidden;
+      position: relative;
+      display: block;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+      border-radius: 16px;
+      overflow: hidden;
       box-shadow: 0 4px 20px rgba(136,14,79,0.14), 0 0 0 2.5px var(--petal-2);
-      background: #fffbfc; aspect-ratio: 1 / 1;
+      background: #fffbfc;
+      aspect-ratio: 1 / 1;
     }
-    .canvas-wrap canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .canvas-wrap canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-    #tpl { z-index: 1; pointer-events: none; opacity: 0; }
+    #tpl {
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+    }
     #tpl.visible { opacity: 1; }
-    #canvas { z-index: 2; touch-action: none; background: transparent; }
 
-    .corner { position: absolute; font-size: 22px; opacity: 0.45; pointer-events: none; }
+    #canvas {
+      z-index: 2;
+      touch-action: none;
+      background: transparent;
+    }
+
+    .corner {
+      position: absolute;
+      font-size: 22px;
+      opacity: 0.45;
+      pointer-events: none;
+    }
     .corner.tl { top: 7px; left: 9px; transform: rotate(-20deg); }
     .corner.tr { top: 7px; right: 9px; transform: rotate(20deg); }
     .corner.bl { bottom: 7px; left: 9px; transform: rotate(20deg); }
     .corner.br { bottom: 7px; right: 9px; transform: rotate(-20deg); }
 
     .buttons {
-      display: flex; gap: 10px; margin-top: 18px;
-      flex-wrap: wrap; justify-content: center;
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
     .btn {
-      flex: 1; min-width: 80px; padding: 13px 10px; border: none;
-      border-radius: 50px; font-family: 'Noto Serif JP', serif;
-      font-size: 14px; cursor: pointer; letter-spacing: 0.05em;
+      flex: 1;
+      min-width: 80px;
+      padding: 13px 10px;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 14px;
+      cursor: pointer;
+      letter-spacing: 0.05em;
       transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
       -webkit-tap-highlight-color: transparent;
     }
@@ -218,20 +291,27 @@
       box-shadow: 0 3px 12px rgba(233,30,140,0.12), inset 0 0 0 1.5px var(--petal-2);
     }
     .btn-clear {
-      background: linear-gradient(135deg, #fff8f0, #fce4ec); color: #7b3a50;
+      background: linear-gradient(135deg, #fff8f0, #fce4ec);
+      color: #7b3a50;
       box-shadow: 0 3px 12px rgba(136,14,79,0.10), inset 0 0 0 1.5px #f9c6d4;
     }
     .btn-next {
       background: linear-gradient(135deg, var(--sakura-deep), var(--sakura-dark));
-      color: #fff; box-shadow: 0 4px 18px rgba(233,30,140,0.35);
-      font-weight: 700; letter-spacing: 0.08em;
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(233,30,140,0.35);
+      font-weight: 700;
+      letter-spacing: 0.08em;
     }
 
     .footer-note {
-      position: relative; z-index: 2;
-      margin-top: 18px; margin-bottom: 28px;
-      font-size: 11px; color: var(--sakura-mid);
-      letter-spacing: 0.2em; text-align: center;
+      position: relative;
+      z-index: 2;
+      margin-top: 18px;
+      margin-bottom: 28px;
+      font-size: 11px;
+      color: var(--sakura-mid);
+      letter-spacing: 0.2em;
+      text-align: center;
     }
   </style>
 </head>
@@ -245,17 +325,12 @@
     <div class="branch-decor">🌸 ❀ 🌸 ❀ 🌸</div>
   </div>
 
+  <!-- Group selector menu -->
   <div class="menu-bar" id="menuBar">
-    <div class="menu-top-row">
-      <div class="menu-toggle-btn" onclick="toggleMenu()">
-        <span class="label">Group:</span>
-        <span class="menu-active-label" id="activeLabel">All</span>
-        <span class="menu-arrow">▼</span>
-      </div>
-      <button class="mode-btn" id="modeBtn" onclick="toggleMode()">
-        <span class="mode-icon">⇄</span>
-        <span id="modeBtnLabel">by vowel</span>
-      </button>
+    <div class="menu-toggle-row" onclick="toggleMenu()">
+      <span>Group:</span>
+      <span class="menu-active-label" id="activeLabel">All</span>
+      <span class="menu-arrow">▼</span>
     </div>
     <div class="menu-grid-wrap">
       <div class="menu-grid" id="menuGrid"></div>
@@ -301,73 +376,36 @@
       petalsEl.appendChild(p);
     }
 
-    // ── Full hiragana table (row × col) ──
-    // rows = consonant groups, cols = a i u e o
-    const table = [
-      [{k:'あ',r:'a'}, {k:'い',r:'i'}, {k:'う',r:'u'}, {k:'え',r:'e'}, {k:'お',r:'o'}],
-      [{k:'か',r:'ka'},{k:'き',r:'ki'},{k:'く',r:'ku'},{k:'け',r:'ke'},{k:'こ',r:'ko'}],
-      [{k:'さ',r:'sa'},{k:'し',r:'shi'},{k:'す',r:'su'},{k:'せ',r:'se'},{k:'そ',r:'so'}],
-      [{k:'た',r:'ta'},{k:'ち',r:'chi'},{k:'つ',r:'tsu'},{k:'て',r:'te'},{k:'と',r:'to'}],
-      [{k:'な',r:'na'},{k:'に',r:'ni'},{k:'ぬ',r:'nu'},{k:'ね',r:'ne'},{k:'の',r:'no'}],
-      [{k:'は',r:'ha'},{k:'ひ',r:'hi'},{k:'ふ',r:'fu'},{k:'へ',r:'he'},{k:'ほ',r:'ho'}],
-      [{k:'ま',r:'ma'},{k:'み',r:'mi'},{k:'む',r:'mu'},{k:'め',r:'me'},{k:'も',r:'mo'}],
-      [{k:'や',r:'ya'},{k:'ゆ',r:'yu'},{k:'よ',r:'yo'}],
-      [{k:'ら',r:'ra'},{k:'り',r:'ri'},{k:'る',r:'ru'},{k:'れ',r:'re'},{k:'ろ',r:'ro'}],
-      [{k:'わ',r:'wa'},{k:'を',r:'wo'},{k:'ん',r:'n'}],
+    // ── All groups ──
+    const groups = [
+      { label: 'All',  kana: [
+        {k:'あ',r:'a'},{k:'い',r:'i'},{k:'う',r:'u'},{k:'え',r:'e'},{k:'お',r:'o'},
+        {k:'か',r:'ka'},{k:'き',r:'ki'},{k:'く',r:'ku'},{k:'け',r:'ke'},{k:'こ',r:'ko'},
+        {k:'さ',r:'sa'},{k:'し',r:'shi'},{k:'す',r:'su'},{k:'せ',r:'se'},{k:'そ',r:'so'},
+        {k:'た',r:'ta'},{k:'ち',r:'chi'},{k:'つ',r:'tsu'},{k:'て',r:'te'},{k:'と',r:'to'},
+        {k:'な',r:'na'},{k:'に',r:'ni'},{k:'ぬ',r:'nu'},{k:'ね',r:'ne'},{k:'の',r:'no'},
+        {k:'は',r:'ha'},{k:'ひ',r:'hi'},{k:'ふ',r:'fu'},{k:'へ',r:'he'},{k:'ほ',r:'ho'},
+        {k:'ま',r:'ma'},{k:'み',r:'mi'},{k:'む',r:'mu'},{k:'め',r:'me'},{k:'も',r:'mo'},
+        {k:'や',r:'ya'},{k:'ゆ',r:'yu'},{k:'よ',r:'yo'},
+        {k:'ら',r:'ra'},{k:'り',r:'ri'},{k:'る',r:'ru'},{k:'れ',r:'re'},{k:'ろ',r:'ro'},
+        {k:'わ',r:'wa'},{k:'を',r:'wo'},{k:'ん',r:'n'}
+      ]},
+      { label: 'a · i · u · e · o',   kana: [{k:'あ',r:'a'},{k:'い',r:'i'},{k:'う',r:'u'},{k:'え',r:'e'},{k:'お',r:'o'}] },
+      { label: 'ka · ki · ku · ke · ko', kana: [{k:'か',r:'ka'},{k:'き',r:'ki'},{k:'く',r:'ku'},{k:'け',r:'ke'},{k:'こ',r:'ko'}] },
+      { label: 'sa · shi · su · se · so', kana: [{k:'さ',r:'sa'},{k:'し',r:'shi'},{k:'す',r:'su'},{k:'せ',r:'se'},{k:'そ',r:'so'}] },
+      { label: 'ta · chi · tsu · te · to', kana: [{k:'た',r:'ta'},{k:'ち',r:'chi'},{k:'つ',r:'tsu'},{k:'て',r:'te'},{k:'と',r:'to'}] },
+      { label: 'na · ni · nu · ne · no', kana: [{k:'な',r:'na'},{k:'に',r:'ni'},{k:'ぬ',r:'nu'},{k:'ね',r:'ne'},{k:'の',r:'no'}] },
+      { label: 'ha · hi · fu · he · ho', kana: [{k:'は',r:'ha'},{k:'ひ',r:'hi'},{k:'ふ',r:'fu'},{k:'へ',r:'he'},{k:'ほ',r:'ho'}] },
+      { label: 'ma · mi · mu · me · mo', kana: [{k:'ま',r:'ma'},{k:'み',r:'mi'},{k:'む',r:'mu'},{k:'め',r:'me'},{k:'も',r:'mo'}] },
+      { label: 'ya · yu · yo',           kana: [{k:'や',r:'ya'},{k:'ゆ',r:'yu'},{k:'よ',r:'yo'}] },
+      { label: 'ra · ri · ru · re · ro', kana: [{k:'ら',r:'ra'},{k:'り',r:'ri'},{k:'る',r:'ru'},{k:'れ',r:'re'},{k:'ろ',r:'ro'}] },
+      { label: 'wa · wo · n',            kana: [{k:'わ',r:'wa'},{k:'を',r:'wo'},{k:'ん',r:'n'}] },
     ];
 
-    // Row labels (by consonant)
-    const rowLabels = [
-      'a · i · u · e · o',
-      'ka · ki · ku · ke · ko',
-      'sa · shi · su · se · so',
-      'ta · chi · tsu · te · to',
-      'na · ni · nu · ne · no',
-      'ha · hi · fu · he · ho',
-      'ma · mi · mu · me · mo',
-      'ya · yu · yo',
-      'ra · ri · ru · re · ro',
-      'wa · wo · n',
-    ];
-
-    // Column labels (by vowel)
-    const colLabels = [
-      'a · ka · sa · ta · na · ha · ma · ya · ra · wa',
-      'i · ki · shi · chi · ni · hi · mi · ri',
-      'u · ku · su · tsu · nu · fu · mu · yu · ru',
-      'e · ke · se · te · ne · he · me · re',
-      'o · ko · so · to · no · ho · mo · yo · ro · wo · n',
-    ];
-
-    // Build groups by rows
-    function buildRowGroups() {
-      const all = table.flat();
-      const groups = [{ label: 'All', kana: all }];
-      table.forEach((row, i) => groups.push({ label: rowLabels[i], kana: row }));
-      return groups;
-    }
-
-    // Build groups by columns (vowel columns)
-    function buildColGroups() {
-      const all = table.flat();
-      const cols = [[], [], [], [], []];
-      table.forEach(row => {
-        row.forEach((cell, ci) => {
-          if (ci < 5) cols[ci].push(cell);
-        });
-      });
-      const groups = [{ label: 'All', kana: all }];
-      cols.forEach((col, i) => groups.push({ label: colLabels[i], kana: col }));
-      return groups;
-    }
-
-    // ── State ──
-    let mode             = 'row';   // 'row' | 'col'
-    let groups           = buildRowGroups();
     let currentGroupIndex = 0;
-    let currentIndex     = 0;
-    let templateVisible  = false;
-    let menuOpen         = false;
+    let currentIndex      = 0;
+    let templateVisible   = false;
+    let menuOpen          = false;
 
     const canvas      = document.getElementById('canvas');
     const ctx         = canvas.getContext('2d');
@@ -378,19 +416,15 @@
     const menuBar     = document.getElementById('menuBar');
     const activeLabel = document.getElementById('activeLabel');
     const menuGrid    = document.getElementById('menuGrid');
-    const modeBtn     = document.getElementById('modeBtn');
-    const modeBtnLabel= document.getElementById('modeBtnLabel');
 
-    function buildChips() {
-      menuGrid.innerHTML = '';
-      groups.forEach((g, i) => {
-        const chip = document.createElement('button');
-        chip.className = 'group-chip' + (i === currentGroupIndex ? ' active' : '');
-        chip.textContent = g.label;
-        chip.onclick = () => selectGroup(i);
-        menuGrid.appendChild(chip);
-      });
-    }
+    // Build group chips
+    groups.forEach((g, i) => {
+      const chip = document.createElement('button');
+      chip.className = 'group-chip' + (i === 0 ? ' active' : '');
+      chip.textContent = g.label;
+      chip.onclick = () => selectGroup(i);
+      menuGrid.appendChild(chip);
+    });
 
     function toggleMenu() {
       menuOpen = !menuOpen;
@@ -400,24 +434,14 @@
     function selectGroup(i) {
       currentGroupIndex = i;
       currentIndex = 0;
+      // Update chip styles
       document.querySelectorAll('.group-chip').forEach((c, idx) => {
         c.classList.toggle('active', idx === i);
       });
       activeLabel.textContent = groups[i].label;
+      // Close menu
       menuOpen = false;
       menuBar.classList.remove('open');
-      update();
-    }
-
-    function toggleMode() {
-      mode = mode === 'row' ? 'col' : 'row';
-      groups = mode === 'row' ? buildRowGroups() : buildColGroups();
-      currentGroupIndex = 0;
-      currentIndex = 0;
-      modeBtnLabel.textContent = mode === 'row' ? 'by vowel' : 'by consonant';
-      modeBtn.classList.toggle('col-mode', mode === 'col');
-      activeLabel.textContent = groups[0].label;
-      buildChips();
       update();
     }
 
@@ -435,8 +459,9 @@
     }
 
     function buildDots() {
+      const list = currentList();
       dotsEl.innerHTML = '';
-      currentList().forEach((_, i) => {
+      list.forEach((_, i) => {
         const d = document.createElement('div');
         d.className = 'dot' + (i === currentIndex ? ' active' : '');
         dotsEl.appendChild(d);
@@ -446,6 +471,8 @@
     function update() {
       const entry = currentList()[currentIndex];
       romajiLabel.textContent = entry.r;
+
+      // Hide stencil instantly, clear, redraw hidden
       templateVisible = false;
       tplCanvas.classList.remove('visible');
       tplCtx.clearRect(0, 0, 320, 320);
@@ -455,7 +482,8 @@
     }
 
     function nextKana() {
-      currentIndex = (currentIndex + 1) % currentList().length;
+      const list = currentList();
+      currentIndex = (currentIndex + 1) % list.length;
       update();
     }
 
@@ -512,10 +540,7 @@
     canvas.addEventListener('touchmove',  draw,  { passive: false });
     canvas.addEventListener('touchend',   stop);
 
-    document.fonts.ready.then(() => {
-      buildChips();
-      update();
-    });
+    document.fonts.ready.then(() => update());
   </script>
 </body>
 </html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Hiragana Practice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700&family=Zen+Antique&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --sakura-light: #fce4ec;
+      --sakura-mid: #f48fb1;
+      --sakura-deep: #e91e8c;
+      --sakura-dark: #880e4f;
+      --petal-1: #ffd6e0;
+      --petal-2: #ffb3c6;
+      --ink: #1a0a0f;
+      --paper: #fff8f9;
+      --shadow: rgba(136,14,79,0.18);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Serif JP', serif;
+      background: var(--sakura-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .petals-bg {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .petal {
+      position: absolute;
+      top: -40px;
+      opacity: 0;
+      animation: fall linear infinite;
+      border-radius: 50% 0 50% 0;
+    }
+    .petal:nth-child(odd)  { background: var(--petal-2); }
+    .petal:nth-child(even) { background: var(--petal-1); }
+    .petal:nth-child(3n)   { background: #ffc8d9; }
+    @keyframes fall {
+      0%   { transform: translateY(0) rotate(0deg) translateX(0); opacity: 0; }
+      10%  { opacity: 0.85; }
+      90%  { opacity: 0.6; }
+      100% { transform: translateY(110vh) rotate(360deg) translateX(60px); opacity: 0; }
+    }
+
+    .header {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      padding: 28px 20px 14px;
+      text-align: center;
+      background: linear-gradient(160deg, #fff0f4 0%, #fce4ec 100%);
+      border-bottom: 2px solid var(--petal-2);
+      box-shadow: 0 4px 24px var(--shadow);
+    }
+    .header h1 {
+      font-family: 'Zen Antique', serif;
+      font-size: 22px;
+      color: var(--sakura-dark);
+      letter-spacing: 0.15em;
+    }
+    .header small {
+      display: block;
+      font-size: 11px;
+      color: var(--sakura-mid);
+      letter-spacing: 0.3em;
+      margin-top: 3px;
+      text-transform: uppercase;
+    }
+    .branch-decor {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 6px;
+      font-size: 18px;
+      letter-spacing: 4px;
+    }
+
+    .card {
+      position: relative;
+      z-index: 2;
+      margin: 22px 16px 0;
+      background: var(--paper);
+      border-radius: 24px;
+      padding: 22px 18px 38px;
+      box-shadow:
+        0 8px 40px rgba(136,14,79,0.13),
+        0 2px 8px rgba(233,30,140,0.08),
+        inset 0 0 0 1px rgba(244,143,177,0.35);
+      width: calc(100% - 32px);
+      max-width: 390px;
+      text-align: center;
+    }
+
+    .romaji-label {
+      font-size: 13px;
+      color: var(--sakura-mid);
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+      min-height: 20px;
+    }
+
+    .progress-dots {
+      display: flex;
+      justify-content: center;
+      gap: 5px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      max-width: 290px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--petal-2);
+      transition: background 0.3s;
+    }
+    .dot.active { background: var(--sakura-deep); }
+
+    .canvas-wrap {
+      position: relative;
+      display: block;
+      width: 100%;
+      max-width: 320px;
+      margin: 0 auto;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(136,14,79,0.14), 0 0 0 2.5px var(--petal-2);
+      background: #fffbfc;
+      aspect-ratio: 1 / 1;
+    }
+
+    .canvas-wrap canvas {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Layer 1 — stencil */
+    #tpl {
+      z-index: 1;
+      pointer-events: none;
+      /* NO transition — instant hide/show to prevent flash */
+      opacity: 0;
+    }
+    #tpl.visible {
+      opacity: 1;
+    }
+
+    /* Layer 2 — user drawing */
+    #canvas {
+      z-index: 2;
+      touch-action: none;
+      background: transparent;
+    }
+
+    .corner {
+      position: absolute;
+      font-size: 22px;
+      opacity: 0.45;
+      pointer-events: none;
+    }
+    .corner.tl { top: 7px; left: 9px; transform: rotate(-20deg); }
+    .corner.tr { top: 7px; right: 9px; transform: rotate(20deg); }
+    .corner.bl { bottom: 7px; left: 9px; transform: rotate(20deg); }
+    .corner.br { bottom: 7px; right: 9px; transform: rotate(-20deg); }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn {
+      flex: 1;
+      min-width: 80px;
+      padding: 13px 10px;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Noto Serif JP', serif;
+      font-size: 14px;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn:active { transform: scale(0.95); }
+    .btn-show {
+      background: linear-gradient(135deg, #fff0f5, #fce4ec);
+      color: var(--sakura-dark);
+      box-shadow: 0 3px 12px rgba(233,30,140,0.12), inset 0 0 0 1.5px var(--petal-2);
+    }
+    .btn-clear {
+      background: linear-gradient(135deg, #fff8f0, #fce4ec);
+      color: #7b3a50;
+      box-shadow: 0 3px 12px rgba(136,14,79,0.10), inset 0 0 0 1.5px #f9c6d4;
+    }
+    .btn-next {
+      background: linear-gradient(135deg, var(--sakura-deep), var(--sakura-dark));
+      color: #fff;
+      box-shadow: 0 4px 18px rgba(233,30,140,0.35);
+      font-weight: 700;
+      letter-spacing: 0.08em;
+    }
+
+    .footer-note {
+      position: relative;
+      z-index: 2;
+      margin-top: 18px;
+      margin-bottom: 28px;
+      font-size: 11px;
+      color: var(--sakura-mid);
+      letter-spacing: 0.2em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="petals-bg" id="petals"></div>
+
+  <div class="header">
+    <h1>ひらがな · Practice</h1>
+    <small>trace the character with your finger</small>
+    <div class="branch-decor">🌸 ❀ 🌸 ❀ 🌸</div>
+  </div>
+
+  <div class="card">
+    <span class="corner tl">🌸</span>
+    <span class="corner tr">🌸</span>
+    <span class="corner bl">❀</span>
+    <span class="corner br">❀</span>
+
+    <div class="romaji-label" id="romaji-label"></div>
+    <div class="progress-dots" id="dots"></div>
+
+    <div class="canvas-wrap">
+      <canvas id="tpl"    width="320" height="320"></canvas>
+      <canvas id="canvas" width="320" height="320"></canvas>
+    </div>
+
+    <div class="buttons">
+      <button class="btn btn-show"  onclick="toggleTemplate()">👁 Template</button>
+      <button class="btn btn-clear" onclick="clearCanvas()">✦ Clear</button>
+      <button class="btn btn-next"  onclick="nextKana()">Next ➜</button>
+    </div>
+  </div>
+
+  <div class="footer-note">🌸 sakura hiragana dojo 🌸</div>
+
+  <script>
+    // ── Falling petals ──
+    const petalsEl = document.getElementById('petals');
+    for (let i = 0; i < 22; i++) {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.style.left   = Math.random() * 100 + 'vw';
+      p.style.width  = (12 + Math.random() * 14) + 'px';
+      p.style.height = (15 + Math.random() * 16) + 'px';
+      const dur = 6 + Math.random() * 9;
+      p.style.animationDuration = dur + 's';
+      p.style.animationDelay   = (-Math.random() * dur) + 's';
+      p.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+      petalsEl.appendChild(p);
+    }
+
+    // ── Hiragana list ──
+    const kanaList = [
+      {k:'あ',r:'a'}, {k:'い',r:'i'}, {k:'う',r:'u'}, {k:'え',r:'e'}, {k:'お',r:'o'},
+      {k:'か',r:'ka'},{k:'き',r:'ki'},{k:'く',r:'ku'},{k:'け',r:'ke'},{k:'こ',r:'ko'},
+      {k:'さ',r:'sa'},{k:'し',r:'shi'},{k:'す',r:'su'},{k:'せ',r:'se'},{k:'そ',r:'so'},
+      {k:'た',r:'ta'},{k:'ち',r:'chi'},{k:'つ',r:'tsu'},{k:'て',r:'te'},{k:'と',r:'to'},
+      {k:'な',r:'na'},{k:'に',r:'ni'},{k:'ぬ',r:'nu'},{k:'ね',r:'ne'},{k:'の',r:'no'},
+      {k:'は',r:'ha'},{k:'ひ',r:'hi'},{k:'ふ',r:'fu'},{k:'へ',r:'he'},{k:'ほ',r:'ho'},
+      {k:'ま',r:'ma'},{k:'み',r:'mi'},{k:'む',r:'mu'},{k:'め',r:'me'},{k:'も',r:'mo'},
+      {k:'や',r:'ya'},{k:'ゆ',r:'yu'},{k:'よ',r:'yo'},
+      {k:'ら',r:'ra'},{k:'り',r:'ri'},{k:'る',r:'ru'},{k:'れ',r:'re'},{k:'ろ',r:'ro'},
+      {k:'わ',r:'wa'},{k:'を',r:'wo'},{k:'ん',r:'n'}
+    ];
+
+    let currentIndex   = 0;
+    let templateVisible = false; // hidden by default
+
+    const canvas      = document.getElementById('canvas');
+    const ctx         = canvas.getContext('2d');
+    const tplCanvas   = document.getElementById('tpl');
+    const tplCtx      = tplCanvas.getContext('2d');
+    const romajiLabel = document.getElementById('romaji-label');
+    const dotsEl      = document.getElementById('dots');
+
+    function drawStencil(kana) {
+      tplCtx.clearRect(0, 0, 320, 320);
+      tplCtx.fillStyle    = 'rgba(210, 50, 110, 0.18)';
+      tplCtx.font         = '240px "Noto Serif JP", "Hiragino Kaku Gothic Pro", "Yu Gothic", serif';
+      tplCtx.textAlign    = 'center';
+      tplCtx.textBaseline = 'middle';
+      tplCtx.fillText(kana, 160, 168);
+    }
+
+    function buildDots() {
+      dotsEl.innerHTML = '';
+      kanaList.forEach((_, i) => {
+        const d = document.createElement('div');
+        d.className = 'dot' + (i === currentIndex ? ' active' : '');
+        dotsEl.appendChild(d);
+      });
+    }
+
+    function update() {
+      const entry = kanaList[currentIndex];
+      romajiLabel.textContent = entry.r;
+
+      // 1. Hide stencil instantly (no CSS transition on #tpl)
+      templateVisible = false;
+      tplCanvas.classList.remove('visible');
+
+      // 2. Clear both canvases
+      tplCtx.clearRect(0, 0, 320, 320);
+      clearCanvas();
+
+      // 3. Draw new stencil into hidden canvas — no flash possible
+      drawStencil(entry.k);
+
+      buildDots();
+    }
+
+    function nextKana() {
+      currentIndex = (currentIndex + 1) % kanaList.length;
+      update();
+    }
+
+    function toggleTemplate() {
+      templateVisible = !templateVisible;
+      tplCanvas.classList.toggle('visible', templateVisible);
+    }
+
+    function clearCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // ── Drawing ──
+    let drawing = false;
+
+    function getPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      const sx = canvas.width  / rect.width;
+      const sy = canvas.height / rect.height;
+      if (e.touches) return {
+        x: (e.touches[0].clientX - rect.left) * sx,
+        y: (e.touches[0].clientY - rect.top)  * sy
+      };
+      return {
+        x: (e.clientX - rect.left) * sx,
+        y: (e.clientY - rect.top)  * sy
+      };
+    }
+
+    function start(e) {
+      drawing = true;
+      ctx.beginPath();
+      const p = getPos(e);
+      ctx.moveTo(p.x, p.y);
+    }
+    function draw(e) {
+      if (!drawing) return;
+      e.preventDefault();
+      const p = getPos(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.strokeStyle = 'rgba(26, 10, 15, 0.65)';
+      ctx.lineWidth   = 10;
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+      ctx.stroke();
+    }
+    function stop() { drawing = false; }
+
+    canvas.addEventListener('mousedown',  start);
+    canvas.addEventListener('mousemove',  draw);
+    canvas.addEventListener('mouseup',    stop);
+    canvas.addEventListener('mouseleave', stop);
+    canvas.addEventListener('touchstart', start, { passive: false });
+    canvas.addEventListener('touchmove',  draw,  { passive: false });
+    canvas.addEventListener('touchend',   stop);
+
+    document.fonts.ready.then(() => update());
+  </script>
+</body>
+</html>
